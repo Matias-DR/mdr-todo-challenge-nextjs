@@ -34,7 +34,7 @@ export default function TaskComponent({
         <h1
           className='mb-1 flex-grow text-xl'
           contentEditable
-          onBlur={handleDescriptionBlur}
+          onBlur={handleTitleBlur}
         >
           {title}
         </h1>
