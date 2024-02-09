@@ -47,7 +47,7 @@ export default function HeaderComponent() {
 
   return <div className='w-full h-24 sm:h-12 mb-2 ps-2 pt-2 pe-2 grid sm:gap-2 grid-rows-2 sm:grid-rows-1 sm:grid-cols-2'>
     <div className='w-full sm:w-auto flex sm:gap-2'>
-      <div className='my-auto'>
+      <div className='my-auto me-1 sm:me-0'>
         <ProfileButtonComponent />
       </div>
       <div className='w-16'>
