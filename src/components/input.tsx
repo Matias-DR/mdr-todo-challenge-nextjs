@@ -1,11 +1,18 @@
 import { InputType } from '@/commons/element-types'
+import {
+  FieldError,
+  RegisterOptions,
+  UseFormRegister
+} from 'react-hook-form'
 
 
 interface Props {
   id: string
   type: InputType
+  register: UseFormRegister<any>
+  registerOptions: RegisterOptions<any>
+  error?: FieldError
   label?: string
-  helper?: string
   placeholder?: string
   autoFocus?: boolean
   onClick?: (e: any) => void
@@ -21,7 +28,9 @@ interface Props {
 export default function InputComponent({
   id,
   type,
-  helper,
+  register,
+  registerOptions,
+  error,
   label,
   placeholder,
   autoFocus = false,
@@ -51,15 +60,15 @@ export default function InputComponent({
       type={type}
       placeholder={placeholder}
       autoFocus={autoFocus}
-      onClick={onClick && onClick}
-      onChange={onChange && onChange}
-      onFocus={onFocus && onFocus}
-      onBlur={onBlur && onBlur}
+      {...(register && register(
+        id,
+        registerOptions
+      ))}
     />
-    {helper && <div className='w-full mb-2'>
-      <p className={`${helper ? '' : 'hidden'} text-red-500 text-xs italic`}>
-        {helper}
-      </p>
-    </div>}
+    <div className='relative w-full h-[1rem] mb-2'>
+      {error && <p className={`${error ? 'absolute' : 'hidden'} text-red-500 text-xs italic`}>
+        {error.message}
+      </p>}
+    </div>
   </>
 }
