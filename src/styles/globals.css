@@ -368,7 +368,7 @@ main {
 }
 
 button {
-  @apply box-border
+  @apply box-border;
 }
 
 p,
@@ -383,32 +383,29 @@ li {
   @apply m-0 p-0;
 }
 
-.y-zinc-scrollbar {
+.scrollbar-y-zinc {
   overflow-y: auto;
-  overflow-x: hidden;
 
   &::-webkit-scrollbar {
-    height: 1px;
     width: 0.5rem;
     position: absolute;
     top: 0;
-    background-color: rgba(244, 244, 245, .3);
+    background-color: rgba(244, 244, 245, 0.3);
   }
 
   &::-webkit-scrollbar-button {
-    height: 3px;
+    height: 0px;
   }
 
   &::-webkit-scrollbar-track {
     background: transparent;
-    border-radius: 1rem;
   }
 
   &::-webkit-scrollbar-thumb {
-    background: rgba(244, 244, 245, .2);
+    background: rgba(244, 244, 245, 0.2);
 
     &:hover {
-      background: rgba(244, 244, 245, .4);
+      background: rgba(244, 244, 245, 0.4);
     }
   }
 }
