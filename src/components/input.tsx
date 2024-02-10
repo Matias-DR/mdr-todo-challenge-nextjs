@@ -10,15 +10,11 @@ interface Props {
   id: string
   type: InputType
   register: UseFormRegister<any>
-  registerOptions: RegisterOptions<any>
+  registerOptions?: RegisterOptions<any>
   error?: FieldError
   label?: string
   placeholder?: string
   autoFocus?: boolean
-  onClick?: (e: any) => void
-  onChange?: (e: any) => void
-  onFocus?: (e: any) => void
-  onBlur?: (e: any) => void
   className?: {
     label?: string
     input?: string
@@ -29,15 +25,11 @@ export default function InputComponent({
   id,
   type,
   register,
-  registerOptions,
+  registerOptions = {},
   error,
   label,
   placeholder,
   autoFocus = false,
-  onClick,
-  onChange,
-  onFocus,
-  onBlur,
   className
 }: Props) {
   return <>
