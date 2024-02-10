@@ -79,7 +79,7 @@ export default function LicensePage() {
     </div>
 
     <div className={`
-      w-80 h-1 flex-grow flex items-center justify-center y-zinc-scrollbar
+      w-80 h-1 flex-grow flex items-center justify-center scrollbar-y-zinc
     `}>
       <p className='max-h-full text-zinc-500 text-xs'>
         {languaje}

@@ -12,7 +12,7 @@ export default function SignedLayout({ children }: Props) {
   return <main className='flex flex-col'>
     <HomeContextProvider>
       <HeaderComponent />
-      <div className='w-full flex-grow flex flex-col y-zinc-scrollbar'>
+      <div className='w-full flex-grow flex flex-col scrollbar-y-zinc'>
         {children}
       </div>
     </HomeContextProvider>
