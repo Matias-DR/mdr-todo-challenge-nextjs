@@ -1,37 +1,32 @@
-import del from '@/assets/actions/del.svg'
 import Image from 'next/image'
-import plus from '@/assets/actions/plus.svg'
+import flagNeutral from '@/assets/flag-neutral.svg'
+import flagComplete from '@/assets/flag-complete.svg'
+import flagIncomplete from '@/assets/flag-incomplete.svg'
 
-import {
-  ButtonType,
-  InputType
-} from '@/commons/element-types'
 import { HomeContext } from '@/contexts'
+import { InputType } from '@/commons/element-types'
 import { ProfileButtonComponent } from '@/components/user'
-import { useContext } from 'react'
+import {
+  ReactNode,
+  useContext,
+  useState
+} from 'react'
 
 
-export default function HeaderComponent() {
+/**
+ * A header component that can be used to filter tasks by status
+ * (completed or incomplete), by text and by date or range of dates.
+ * 
+ * @returns {}
+ */
+export default function HeaderComponent(): ReactNode {
   const {
-    setAdd,
-    setRemove,
     setSearched,
     setDateFrom,
     setDateTo,
-    setIsAllSelected
+    status,
+    setStatus
   } = useContext(HomeContext)
-
-  const handleAdd = () => {
-    setAdd(true)
-  }
-
-  const handleDel = () => {
-    setRemove(true)
-  }
-
-  const handleSearch = (e: any) => {
-    setSearched(e.target.value)
-  }
 
   const handleDateFrom = (e: any) => {
     setDateFrom(new Date(e.target.value))
@@ -41,79 +36,129 @@ export default function HeaderComponent() {
     setDateTo(new Date(e.target.value))
   }
 
-  const handleSelectAll = (e: any) => {
-    setIsAllSelected(!e.target.checked)
+  const handleSearch = (e: any) => {
+    setSearched(e.target.value)
   }
 
-  return <div className='w-full h-24 sm:h-12 mb-2 ps-2 pt-2 pe-2 grid sm:gap-2 grid-rows-2 sm:grid-rows-1 sm:grid-cols-2'>
-    <div className='w-full sm:w-auto flex sm:gap-2'>
-      <div className='my-auto me-1 sm:me-0'>
+  const handleStatusFilter = () => {
+    if (status === true) {
+      setStatus(false)
+    } else if (status === false) {
+      setStatus(null)
+    } else {
+      setStatus(true)
+    }
+  }
+
+  return <div className='
+    w-full h-24 sm:h-12
+    mb-2 ps-2 pt-2 pe-2
+    grid grid-rows-2 sm:grid-rows-1 sm:grid-cols-2 sm:gap-2
+    justify-center
+  '>
+
+    {/* First row */}
+    <div className='
+      w-full sm:w-auto
+      flex gap-2
+    '>
+
+      {/* Profile button */}
+      <div className='mt-auto'>
         <ProfileButtonComponent />
       </div>
-      <div className='w-16'>
-        <button
-          type={ButtonType.SUBMIT}
-          onClick={handleAdd}
-          className='h-full flex justify-center items-center py-2 px-4 font-bold text-zinc-100 bg-zinc-700 hover:bg-zinc-800 border-b-2 border-e-2 border-green-400 active:border-0'
-        >
-          <Image
-            src={plus}
-            alt='plus'
-            className='size-[1.5rem]'
-          />
-        </button>
+
+      {/* Status filter button */}
+      <div
+        className='
+          size-[2.5rem]
+          mt-auto
+          relative
+        '
+        onClick={handleStatusFilter}
+      >
+        <Image
+          src={
+            status === true ?
+              flagComplete :
+              status === false ?
+                flagIncomplete :
+                flagNeutral
+          }
+          alt='status-filter'
+          className='
+            absolute
+            -bottom-[.1rem]
+          '
+        />
       </div>
-      <div className='w-16'>
-        <button
-          type={ButtonType.SUBMIT}
-          onClick={handleDel}
-          className='h-full flex justify-center items-center py-2 px-4 font-bold text-zinc-100 bg-zinc-700 hover:bg-zinc-800 border-b-2 border-e-2 border-red-400 active:border-0'
-        >
-          <Image
-            src={del}
-            alt='del'
-            className='size-[1.5rem]'
-          />
-        </button>
-      </div>
+
+      {/* Text filter input */}
       <input
         id='filter'
         type={InputType.TEXT}
         onChange={handleSearch}
         placeholder='Buscar...'
-        className='flex-grow h-full text-zinc-100 appearance-none bg-transparent border-b-2 border-zinc-700 focus:outline-none'
+        className='
+          h-full flex-grow
+          appearance-none
+          text-zinc-100
+          bg-transparent
+          border-b-2 border-zinc-700
+          focus:outline-none
+        '
       />
+
     </div>
-    <div className='h-full flex gap-2'>
-      <div className='w-[45%]'>
-        <input
-          id='date-from'
-          type={InputType.TEXT}
-          placeholder='Desde...'
-          onChange={handleDateFrom}
-          onFocus={(e) => (e.target.type = 'date')}
-          onBlur={(e) => (e.target.type = 'text')}
-          className='w-full h-full text-zinc-100 appearance-none bg-transparent border-b-2 border-zinc-700 focus:outline-none'
-        />
-      </div>
-      <div className='w-[45%]'>
-        <input
-          id='date-to'
-          type={InputType.TEXT}
-          placeholder='Hasta...'
-          onChange={handleDateTo}
-          onFocus={(e) => (e.target.type = 'date')}
-          onBlur={(e) => (e.target.type = 'text')}
-          className='w-full h-full text-zinc-100 appearance-none bg-transparent border-b-2 border-zinc-700 focus:outline-none'
-        />
-      </div>
-      <div className='w-[10%] flex'>
-        <input
-          id='select-all'
-          type={InputType.CHECK}
-          onClick={handleSelectAll}
-          className='size-[2rem] ms-auto my-auto'
-        />
+
+    {/* Second row */}
+    <div className='
+      h-full
+      flex gap-2
+    '>
+      <div className='
+        flex-grow
+        flex gap-2
+      '>
+
+        {/* Date from input */}
+        <div className='w-1/2'>
+          <input
+            id='date-from'
+            type={InputType.TEXT}
+            placeholder='Desde...'
+            onChange={handleDateFrom}
+            onFocus={(e) => (e.target.type = 'date')}
+            onBlur={(e) => (e.target.type = 'text')}
+            className='
+              size-full
+              appearance-none
+              text-zinc-100
+              bg-transparent
+              border-b-2 border-zinc-700
+              focus:outline-none
+          '/>
+        </div>
+
+        {/* Date to input */}
+        <div className='w-1/2'>
+          <input
+            id='date-to'
+            type={InputType.TEXT}
+            placeholder='Hasta...'
+            onChange={handleDateTo}
+            onFocus={(e) => (e.target.type = 'date')}
+            onBlur={(e) => (e.target.type = 'text')}
+            className='
+            size-full
+            appearance-none
+            text-zinc-100
+            bg-transparent
+            border-b-2 border-zinc-700
+            focus:outline-none
+          '/>
+        </div>
+
       </div>
     </div>
   </div>
