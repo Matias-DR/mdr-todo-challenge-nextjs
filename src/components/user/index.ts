@@ -1,1 +1,4 @@
-export { default as ProfileButtonComponent } from './profile-button'
+export {
+  default as ProfileButtonComponent,
+  type UpdateFormData
+} from './profile-button'
