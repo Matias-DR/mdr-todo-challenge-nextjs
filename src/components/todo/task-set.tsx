@@ -17,7 +17,7 @@ import {
  * aggregate them.
  */
 export default function TaskSetComponent(): ReactNode {
-  const [tasks, setTasks] = useState<any[]>([])
+  const [tasks, setTasks] = useState<TaskType[]>([])
   const {
     status,
     searched,
@@ -29,7 +29,7 @@ export default function TaskSetComponent(): ReactNode {
    * Create a task, aggregate it to the set of tasks and send it to the
    * endpoint for creating tasks. Does not allow to create without both title
    * and description, needs almost one of them.
-   * @param {TaskType} task - The task to create.
+   * @arg {TaskType} task - The task to create.
    */
   const handleCreate = (task: TaskType) => {
     if (!task.title && !task.description) return
@@ -45,7 +45,7 @@ export default function TaskSetComponent(): ReactNode {
   /**
    * Remove a task by primary key and send it to the endpoint for removing
    * tasks.
-   * @param pk - The primary key of the task to remove.
+   * @arg pk - The primary key of the task to remove.
    */
   const handleRemove = (pk: number): void => {
     setTasks(tasks.filter((_, index) => index !== pk))
@@ -53,7 +53,7 @@ export default function TaskSetComponent(): ReactNode {
 
   /**
    * Create the order of the task by your index.
-   * @param index - The index of the task.
+   * @arg index - The index of the task.
    */
   const craftOrder = (index: number): string => `order-${index + 1}`
 

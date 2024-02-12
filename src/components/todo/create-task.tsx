@@ -14,7 +14,7 @@ export type TaskType = {
 
 /**
  * The properties of the task component.
- * @param {function} handleCreate - A function to create the task.
+ * @arg {function} handleCreate - A function to create the task.
  */
 interface Props {
   handleCreate: (task: TaskType) => void
@@ -22,7 +22,7 @@ interface Props {
 
 /**
  * A task component that can be used to display a task, modify it and delete it.
- * @param {Props} props - The properties of the task component.
+ * @arg {Props} props - The properties of the task component.
  */
 export default function CreateTaskComponent({ handleCreate }: Props): ReactNode {
   const [title, setTitle] = useState<string>('')
