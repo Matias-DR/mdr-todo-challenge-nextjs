@@ -10,7 +10,7 @@ import { SignupFormData } from '@/components/sign/up/form'
 
 
 /**
- * Async handler function that sends the signin form data to the server.
+ * Async handler function that sends the signin form data to the external server.
  * Filters the response and sends the appropriate status code and message
  * @arg {NextApiRequest} req
  * @arg {NextApiResponse} res
@@ -37,7 +37,7 @@ export default async function handler(
         }
       )
       res.setHeader('Set-Cookie', cookie)
-      res.status(200).json({})
+      res.status(response.status).json({})
     })
 
     .catch((error: any) => {

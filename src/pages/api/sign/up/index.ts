@@ -8,7 +8,7 @@ import { SignupFormData } from '@/components/sign/up/form'
 
 
 /**
- * Async handler function that sends the signup form data to the server.
+ * Async handler function that sends the signup form data to the external server.
  * Filters the response and sends the appropriate status code and message
  * @arg {NextApiRequest} req
  * @arg {NextApiResponse} res
@@ -21,7 +21,7 @@ export default async function handler(
   const url = process.env.API_HOST + 'user/'
   await axios.post(url, formData)
     .then((response: any) => {
-      res.status(201).json(response.data)
+      res.status(response.status).json(response.data)
     })
     .catch((error: any) => {
       let message = ''
