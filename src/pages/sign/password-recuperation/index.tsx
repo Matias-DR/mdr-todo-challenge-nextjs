@@ -52,7 +52,7 @@ export default function PasswordRecuperation() {
           <div className='w-full h-1'>
             <button
               type={ButtonType.SUBMIT}
-              className='w-full py-2 px-4 font-bold text-zinc-100 bg-blue-600 hover:bg-blue-800 border-b-2 border-e-2 border-blue-400 active:border-0'
+              className='w-full py-2 px-4 font-bold text-zinc-100 bg-indigo-600 hover:bg-indigo-800 border-b-2 border-e-2 border-indigo-400 active:border-0'
             >
               Enviar correo electrónico de recuperación
             </button>

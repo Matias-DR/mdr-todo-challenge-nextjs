@@ -14,8 +14,8 @@ export default function AComponent({
 }: Props) {
   return <a
     className={`
-      ${className} inline-block align-baseline font-bold text-blue-500 
-      hover:text-blue-800
+      ${className} inline-block align-baseline font-bold text-indigo-500 
+      hover:text-indigo-800
     `}
     href={href}
   >

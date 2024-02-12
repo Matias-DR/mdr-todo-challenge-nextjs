@@ -49,7 +49,7 @@ export default function SigninFormComponent(): ReactNode {
     await axios.post('/api/sign/in', formData)
       .then(() => router.push('/'))
       .catch((error: any) => {
-        setMessage(error.response.data.message,)
+        setMessage(error.response.data.message)
         setMessageStatus(NotificationType.ERROR)
       })
   }
@@ -111,9 +111,9 @@ export default function SigninFormComponent(): ReactNode {
             className='
               py-2 px-4
               font-bold text-zinc-100
-              bg-blue-600
-              border-b-2 border-e-2 border-blue-400
-              hover:bg-blue-800
+              bg-indigo-600
+              border-b-2 border-e-2 border-indigo-400
+              hover:bg-indigo-800
               active:border-0
             '
           >

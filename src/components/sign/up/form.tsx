@@ -156,10 +156,10 @@ export default function SignupFormComponent(): ReactNode {
             className='
               py-2 px-4
               font-bold text-zinc-100
-              bg-blue-600
+              bg-indigo-600
               border-b-2 border-e-2
-              border-blue-400
-              hover:bg-blue-800
+              border-indigo-400
+              hover:bg-indigo-800
               active:border-0
             '
           >
