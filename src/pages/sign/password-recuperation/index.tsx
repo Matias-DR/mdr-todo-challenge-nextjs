@@ -6,9 +6,9 @@ import {
   ButtonType,
   InputType
 } from '@/commons/element-types'
+import { serverSideUnsignedVerify } from '@/utils'
+import { UnsignedLayout } from '@/layouts'
 import { useForm } from 'react-hook-form'
-
-import UnsignedLayout from '@/layouts/unsigned.layout'
 
 
 type FormData = {
@@ -68,4 +68,8 @@ export default function PasswordRecuperation() {
       </AComponent>
     </div>
   </UnsignedLayout>
+}
+
+export async function getServerSideProps(context: any) {
+  return serverSideUnsignedVerify(context)
 }

@@ -1,6 +1,7 @@
-import SignedLayout from '@/layouts/signed.layout'
+import SignedLayout from '@/layouts/signed'
 
 import { TaskSetComponent } from '@/components/todo'
+import { serverSideSignedVerify } from '@/utils'
 
 
 export default function Home() {
@@ -9,4 +10,8 @@ export default function Home() {
       <TaskSetComponent />
     </div>
   </SignedLayout>
+}
+
+export async function getServerSideProps(context: any) {
+  return serverSideSignedVerify(context)
 }
