@@ -1,58 +1,146 @@
-import { ButtonType } from '@/commons/element-types'
-import { InputComponent } from '@/components'
-import { InputType } from '@/commons/element-types'
-import { useForm } from 'react-hook-form'
-import { useState } from 'react'
-
+import axios from 'axios'
 import cancel from '@/assets/cancel.svg'
 import Image from 'next/image'
 
+import { ButtonType } from '@/commons/element-types'
+import { InputComponent } from '@/components'
+import { InputType } from '@/commons/element-types'
+import {
+  NotificationComponent,
+  NotificationType
+} from '@/components'
+import { useForm } from 'react-hook-form'
+import {
+  type ReactNode,
+  useState
+} from 'react'
+import { useRouter } from 'next/router'
 
-type FormData = {
+
+/**
+ * @arg {string} email - Email of the user
+ * @arg {string} currentPassword - Current password of the user
+ * @arg {string} newPassword - New password of the user
+ * @arg {string} newPasswordConfirmation - New password confirmation of the user
+ */
+export type UpdateFormData = {
   email: string
   currentPassword: string
   newPassword: string
   newPasswordConfirmation: string
 }
 
-export default function ProfileButtonComponent() {
+/**
+ * Profile button component to show the user profile and update it. It also
+ * allows the user to sign out.
+ */
+export default function ProfileButtonComponent(): ReactNode {
   const {
     register,
     handleSubmit,
     formState: { errors },
     watch,
     clearErrors
-  } = useForm<FormData>()
+  } = useForm<UpdateFormData>()
   const [active, setActive] = useState(false)
+  const router = useRouter()
 
-  const _handleSubmit = (formData: FormData) => {
-    console.log(formData)
-  }
-
+  /**
+   * Closes the modal and clears the errors in the form
+   */
   const handleClose = () => {
     setActive(false)
     clearErrors()
   }
+  const [message, setMessage] = useState<string>('')
+  const [messageStatus, setMessageStatus] = useState<NotificationType>(
+    NotificationType.INFO
+  )
 
-  return <div className='inline-block size-9'>
+  /**
+   * Sends the form data to the endpoint to update the user profile
+   * @arg {UpdateFormData} formData - Form data to be submitted
+   */
+  const _handleSubmit = (formData: UpdateFormData) => {
+    axios.patch('/api/user', formData)
+      .then(() => {})
+      .catch((error: any) => {
+        setMessage(error.response.data.message)
+        setMessageStatus(NotificationType.ERROR)
+      })
+  }
+
+  /**
+   * Calls the endpoint of signout to signs out the user
+   */
+  const hangleSignout = () => {
+    axios.post('/api/sign/out')
+      .then(() => {
+        router.replace('/')
+      })
+      .catch((error: any) => {
+        setMessage(error.response.data.message)
+        setMessageStatus(NotificationType.ERROR)
+      })
+  }
+
+  return <div className='
+    size-9
+    inline-block
+  '>
+
+    {/* Absolute notification component */}
+    <NotificationComponent
+      message={message}
+      setMessage={setMessage}
+      type={messageStatus}
+    />
+
+    {/* Profile button */}
     <button
-      className='size-full bg-blue-600 font-bold rounded-full border-2 border-blue-400 hover:bg-blue-500 hover:border-blue-300 active:bg-blue-700 active:border-0'
       onClick={() => setActive(true)}
+      className='
+        size-full
+        font-bold
+        bg-indigo-600
+        border-2
+        border-indigo-400
+        rounded-full
+        hover:bg-indigo-500 hover:border-indigo-300
+        active:bg-indigo-700 active:border-0
+      '
     >
       M
     </button>
-    <div
-      className={`${active ? 'absolute' : 'hidden'} z-10 top-0 left-0 size-full flex justify-center items-center bg-zinc-900/75`}
-    >
-      <form
-        className='relative max-w-max p-8 flex flex-col justify-center items-start bg-zinc-800'
-        noValidate
-        onSubmit={handleSubmit(_handleSubmit)}
-      >
+
+    {/* Profile modal */}
+    <div className={`
+      ${active ? 'absolute' : 'hidden'} z-10 top-0 left-0
+      size-full
+      flex justify-center items-center
+      bg-zinc-900/75
+    `}>
+
+      <div className='
+        relative
+        max-w-max
+        px-8 py-4
+        flex flex-col justify-center items-start
+        bg-zinc-800
+      '>
+
+        {/* Close modal button */}
         <button
           type={ButtonType.BUTTON}
           onClick={handleClose}
-          className='absolute top-0 right-0 flex justify-center items-center pt-2 pe-2 font-bold text-zinc-300'
+          className='
+            absolute
+            top-0 right-0
+            flex justify-center items-center
+            pt-2 pe-2
+            font-bold
+            text-zinc-300
+          '
         >
           <Image
             src={cancel}
@@ -60,72 +148,173 @@ export default function ProfileButtonComponent() {
             className='size-[1.5rem]'
           />
         </button>
-        <h1 className='max-w-[16rem] mb-6 text-xl truncate'>
+
+        {/* Username title */}
+        <h1 className='
+          max-w-[16rem]
+          text-xl
+          truncate
+        '>
           Nombredeusuariomuylargoqweewqqwe
         </h1>
-        <div className='w-full mb-4'>
-          <InputComponent
-            id='email'
-            type={InputType.EMAIL}
-            register={register}
-            registerOptions={{
-              pattern: {
-                value: /\S+@\S+\.\S+/,
-                message: 'El email no es válido'
-              }
-            }}
-            error={errors.email}
-            label='Email'
-            placeholder='email.example@domain.com'
-          />
-        </div>
-        <div className='w-full mb-4'>
-          <InputComponent
-            id='currentPassword'
-            type={InputType.PASSWORD}
-            register={register}
-            registerOptions={{
-              required: 'La contraseña actual es requerida'
-            }}
-            error={errors.currentPassword}
-            label='Contraseña actual'
-          />
-        </div>
-        <div className='w-full mb-4'>
-          <InputComponent
-            id='newPassword'
-            type={InputType.PASSWORD}
-            register={register}
-            registerOptions={{}}
-            error={errors.newPassword}
-            label='Nueva Contraseña'
-          />
-        </div>
-        <div className='w-full mb-4'>
-          <InputComponent
-            id='newPasswordConfirmation'
-            type={InputType.PASSWORD}
-            register={register}
-            registerOptions={{
-              required: watch('newPassword') != '' ? 'La confirmación de la nueva contraseña es requerida' : false,
-              validate: value => value === watch('newPassword') || 'Las contraseñas no coinciden'
-            }}
-            error={errors.newPasswordConfirmation}
-            label='Confirmación de nueva contraseña'
-          />
-        </div>
-        <div className='w-full flex justify-center items-center'>
-          <div className='w-full h-12 flex justify-center items-center'>
-            <button
-              type={ButtonType.SUBMIT}
-              onClick={() => console.log(errors)}
-              className='py-2 px-4 font-bold text-zinc-100 bg-blue-600 hover:bg-blue-800 border-b-2 border-e-2 border-blue-400 active:border-0'
-            >
-              Actualizar datos
-            </button>
+
+        {/* Form */}
+        <form
+          noValidate
+          onSubmit={handleSubmit(_handleSubmit)}
+          className='
+            relative
+            max-w-max
+            p-4
+            flex flex-col justify-center items-start
+            bg-zinc-800
+          '
+        >
+
+          {/* Email input */}
+          <div className='
+            w-full
+            mb-2
+          '>
+            <InputComponent
+              id='email'
+              type={InputType.EMAIL}
+              register={register}
+              registerOptions={{
+                pattern: {
+                  value: /\S+@\S+\.\S+/,
+                  message: 'El email no es válido'
+                }
+              }}
+              error={errors.email}
+              label='Email'
+              placeholder='email.example@domain.com'
+            />
           </div>
-        </div>
-      </form>
+
+          {/* Current password input */}
+          <div className='
+            w-full
+            mb-2
+          '>
+            <InputComponent
+              id='currentPassword'
+              type={InputType.PASSWORD}
+              register={register}
+              registerOptions={{
+                required: 'La contraseña actual es requerida'
+              }}
+              error={errors.currentPassword}
+              label='Contraseña actual'
+            />
+          </div>
+
+          {/* New password input */}
+          <div className='
+            w-full
+            mb-2
+          '>
+            <InputComponent
+              id='newPassword'
+              type={InputType.PASSWORD}
+              register={register}
+              registerOptions={{
+                pattern: {
+                  value: /^(?=.*.)(?=.*\d).{8,}$/,
+                  message: 'La contraseña debe tener al menos 8 caracteres, una letra y un número'
+                }
+              }}
+              error={errors.newPassword}
+              label='Nueva Contraseña'
+            />
+          </div>
+
+          {/* New password confirmation input */}
+          <div className='
+            w-full
+            mb-10 sm:mb-4
+          '>
+            <InputComponent
+              id='newPasswordConfirmation'
+              type={InputType.PASSWORD}
+              register={register}
+              registerOptions={{
+                required: watch('newPassword') != '' ? 'La confirmación de la nueva contraseña es requerida' : false,
+                validate: value => value === watch('newPassword') || 'Las contraseñas no coinciden'
+              }}
+              error={errors.newPasswordConfirmation}
+              label='Confirmación de nueva contraseña'
+            />
+          </div>
+
+          <div className='
+            w-full h-14
+            mb-4 sm:mb-0
+            flex flex-col sm:flex-row place-content-evenly items-center gap-4
+          '>
+
+            {/* Submit button */}
+            <div className='
+            w-full
+            flex justify-center items-center
+          '>
+              <div className='
+              w-full h-12
+              flex justify-center items-center
+            '>
+                <button
+                  type={ButtonType.SUBMIT}
+                  className='
+                    min-w-40
+                    py-2 px-4
+                    font-bold
+                    text-zinc-100
+                    bg-indigo-600
+                    border-b-2 border-e-2
+                    border-indigo-400
+                    hover:bg-indigo-800
+                    active:border-0
+                  '
+                >
+                  Actualizar datos
+                </button>
+              </div>
+            </div>
+
+            {/* Signout button */}
+            <div className='
+              w-full
+              flex justify-center items-center
+            '>
+              <div className='
+                w-full h-12
+                flex justify-center items-center
+              '>
+                <button
+                  type={ButtonType.BUTTON}
+                  onClick={hangleSignout}
+                  className='
+                    py-2 px-4
+                    font-bold
+                    text-zinc-100
+                    bg-indigo-600
+                    border-b-2 border-e-2
+                    border-indigo-400
+                    hover:bg-indigo-800
+                    active:border-0
+                  '
+                >
+                  Cerrar Sesión
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+        </form>
+
+      </div>
+
     </div>
   </div>
 }
