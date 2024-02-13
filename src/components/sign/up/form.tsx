@@ -152,7 +152,6 @@ export default function SignupFormComponent(): ReactNode {
         '>
           <button
             type={ButtonType.SUBMIT}
-            onClick={() => console.log(errors)}
             className='
               py-2 px-4
               font-bold text-zinc-100

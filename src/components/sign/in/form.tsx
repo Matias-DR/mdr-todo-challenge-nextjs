@@ -85,7 +85,7 @@ export default function SigninFormComponent(): ReactNode {
       </div>
 
       {/* Password input */}
-      <div className='mb-8'>
+      <div className='mb-4'>
         <InputComponent
           id='password'
           label='Contraseña'
@@ -98,7 +98,11 @@ export default function SigninFormComponent(): ReactNode {
         />
       </div>
 
-      <div className='flex items-center mb-6'>
+      <div className='
+        mb-6
+        flex flex-col sm:flex-row
+        justify-center items-center gap-2
+      '>
 
         {/* Submit button */}
         <div className='
@@ -107,7 +111,6 @@ export default function SigninFormComponent(): ReactNode {
         '>
           <button
             type={ButtonType.SUBMIT}
-            onClick={() => console.log(errors)}
             className='
               py-2 px-4
               font-bold text-zinc-100

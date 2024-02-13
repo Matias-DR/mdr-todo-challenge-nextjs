@@ -24,7 +24,6 @@ export default function PasswordRecuperation() {
   } = useForm<FormData>()
 
   const _handleSubmit = (formData: any) => {
-    console.log(formData)
   }
 
   return <UnsignedLayout>
