@@ -3,6 +3,7 @@ import cancel from '@/assets/cancel.svg'
 import Image from 'next/image'
 
 import { ButtonType } from '@/commons/element-types'
+import { HomeContext } from '@/contexts'
 import { InputComponent } from '@/components'
 import { InputType } from '@/commons/element-types'
 import {
@@ -12,6 +13,7 @@ import {
 import { useForm } from 'react-hook-form'
 import {
   type ReactNode,
+  useContext,
   useState
 } from 'react'
 import { useRouter } from 'next/router'
@@ -42,8 +44,12 @@ export default function ProfileButtonComponent(): ReactNode {
     watch,
     clearErrors
   } = useForm<UpdateFormData>()
-  const [active, setActive] = useState(false)
+
   const router = useRouter()
+
+  const [active, setActive] = useState(false)
+
+  const { username, email } = useContext(HomeContext)
 
   /**
    * Closes the modal and clears the errors in the form
@@ -63,7 +69,7 @@ export default function ProfileButtonComponent(): ReactNode {
    */
   const _handleSubmit = (formData: UpdateFormData) => {
     axios.patch('/api/user', formData)
-      .then(() => {})
+      .then(() => { })
       .catch((error: any) => {
         setMessage(error.response.data.message)
         setMessageStatus(NotificationType.ERROR)
@@ -75,9 +81,7 @@ export default function ProfileButtonComponent(): ReactNode {
    */
   const hangleSignout = () => {
     axios.post('/api/sign/out')
-      .then(() => {
-        router.replace('/')
-      })
+      .then(() => router.replace('/sign/in'))
       .catch((error: any) => {
         setMessage(error.response.data.message)
         setMessageStatus(NotificationType.ERROR)
@@ -110,7 +114,7 @@ export default function ProfileButtonComponent(): ReactNode {
         active:bg-indigo-700 active:border-0
       '
     >
-      M
+      {username.charAt(0).toUpperCase()}
     </button>
 
     {/* Profile modal */}
@@ -152,10 +156,11 @@ export default function ProfileButtonComponent(): ReactNode {
         {/* Username title */}
         <h1 className='
           max-w-[16rem]
+          px-4
           text-xl
           truncate
         '>
-          Nombredeusuariomuylargoqweewqqwe
+          {username}
         </h1>
 
         {/* Form */}
@@ -188,7 +193,7 @@ export default function ProfileButtonComponent(): ReactNode {
               }}
               error={errors.email}
               label='Email'
-              placeholder='email.example@domain.com'
+              placeholder={email}
             />
           </div>
 
@@ -232,7 +237,7 @@ export default function ProfileButtonComponent(): ReactNode {
           {/* New password confirmation input */}
           <div className='
             w-full
-            mb-10 sm:mb-4
+            mb-8 sm:mb-0
           '>
             <InputComponent
               id='newPasswordConfirmation'
