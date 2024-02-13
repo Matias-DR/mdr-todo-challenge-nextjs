@@ -2,6 +2,7 @@ import type {
   NextApiRequest,
   NextApiResponse
 } from 'next'
+import { serialize } from 'cookie'
 
 
 /**
@@ -13,6 +14,28 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ): Promise<void> {
-  res.setHeader('Set-Cookie', '')
+  const access = serialize(
+    'access',
+    '',
+    {
+      secure: process.env.NODE_ENV === 'production',
+      path: '/'
+    }
+  )
+  const refresh = serialize(
+    'refresh',
+    '',
+    {
+      secure: process.env.NODE_ENV === 'production',
+      path: '/'
+    }
+  )
+  res.setHeader(
+    'Set-Cookie',
+    [
+      access,
+      refresh
+    ]
+  )
   res.status(200).json({})
 }
