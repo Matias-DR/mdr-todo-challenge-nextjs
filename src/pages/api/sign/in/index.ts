@@ -27,7 +27,7 @@ export default async function handler(
     .then((response: any) => {
       const data = response.data
       const { exp } = <JwtPayload>decode(data.access)
-      const cookie = serialize(
+      const access = serialize(
         'access',
         data.access,
         {
@@ -36,7 +36,21 @@ export default async function handler(
           path: '/'
         }
       )
-      res.setHeader('Set-Cookie', cookie)
+      const refresh = serialize(
+        'refresh',
+        data.refresh,
+        {
+          secure: process.env.NODE_ENV === 'production',
+          path: '/'
+        }
+      )
+      res.setHeader(
+        'Set-Cookie',
+        [
+          access,
+          refresh
+        ]
+      )
       res.status(response.status).json({})
     })
 
