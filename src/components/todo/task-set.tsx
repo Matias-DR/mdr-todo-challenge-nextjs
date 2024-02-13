@@ -17,7 +17,7 @@ import {
  * aggregate them.
  */
 export default function TaskSetComponent(): ReactNode {
-  const [tasks, setTasks] = useState<TaskType[]>([])
+  const [tasks, setTasks] = useState<Array<TaskType>>([])
   const {
     status,
     searched,
@@ -59,8 +59,28 @@ export default function TaskSetComponent(): ReactNode {
 
   // Re-render the list of tasks when they are removed or added.
   useEffect(() => {
-    console.log('tasks', tasks)
   }, [tasks])
+
+  // draggable
+  const [draggedItem, setDraggedItem] = useState<number | null>(null)
+
+  const handleDragStart = (index: number) => {
+    setDraggedItem(index)
+  }
+
+  const handleDragOver = (index: number) => {
+    if (draggedItem === null || draggedItem === index) return
+
+    const newTasks = [...tasks]
+    const draggedCard = newTasks[draggedItem]
+
+    newTasks.splice(draggedItem, 1)
+    newTasks.splice(index, 0, draggedCard)
+
+    setTasks(newTasks)
+    setDraggedItem(index)
+  }
+  // draggable
 
   return <div className='
     w-full
@@ -87,7 +107,10 @@ export default function TaskSetComponent(): ReactNode {
       elem,
       index
     ) => <div
-      key={'task-container-' + index}
+      key={index}
+      draggable
+      onDragStart={() => { handleDragStart(index) }}
+      onDragOver={() => { handleDragOver(index) }}
       className={`
         size-full
         ${craftOrder(index)}
@@ -95,6 +118,7 @@ export default function TaskSetComponent(): ReactNode {
     >
       <TaskComponent
         key={'task-' + index}
+        // Acá va la pk, no index
         pk={index}
         title={elem.title}
         description={elem.description}
