@@ -1,6 +1,4 @@
 import axios from 'axios'
-import { decode } from 'jsonwebtoken'
-import { parse } from 'cookie'
 
 import type {
   NextApiRequest,
@@ -19,9 +17,7 @@ export default async function handler(
   res: NextApiResponse
 ): Promise<void> {
   const formData: UpdateFormData = req.body
-
-  // La URL tiene que ser igual a f'user/{pk}/'
-  const url = process.env.API_HOST + 'user/'
+  const url = process.env.API_HOST + `user/${7}/`
 
   await axios.patch(url, formData)
 
@@ -32,7 +28,6 @@ export default async function handler(
     })
 
     .catch((error: any) => {
-      console.log('Esto es response.data', error.response.data)
       let message = ''
       try {
         Object.entries(error.response.data).map((entry: any) => {
