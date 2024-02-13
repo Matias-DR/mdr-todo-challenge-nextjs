@@ -1,10 +1,17 @@
-import { decode } from 'jsonwebtoken'
-import { parse } from 'cookie'
+import { extractUserFromServerContext } from '.'
 
 
-export default async function serverSideUnsignedVerify(context: any) {
-  const cookies = parse(context.req.headers.cookie || '')
-  const decoded = decode(cookies.access)
-  if (decoded) return { redirect: { destination: '/' } }
+interface Redirect {
+  destination: string
+}
+
+interface Return {
+  props?: {}
+  redirect?: Redirect
+}
+
+export default function serverSideUnsignedVerify(context: any) {
+  const user = extractUserFromServerContext(context)
+  if (user) return { redirect: { destination: '/' } }
   return { props: {} }
 }
