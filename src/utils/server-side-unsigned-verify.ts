@@ -1,4 +1,4 @@
-import { extractUserFromServerContext } from '.'
+import { extractUserTokenFromServerContext } from '.'
 
 
 interface Redirect {
@@ -11,7 +11,7 @@ interface Return {
 }
 
 export default function serverSideUnsignedVerify(context: any) {
-  const user = extractUserFromServerContext(context)
+  const user = extractUserTokenFromServerContext(context)
   if (user) return { redirect: { destination: '/' } }
   return { props: {} }
 }

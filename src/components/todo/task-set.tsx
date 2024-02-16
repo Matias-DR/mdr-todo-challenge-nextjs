@@ -1,4 +1,10 @@
-import { HomeContext } from '@/contexts'
+import axios from 'axios'
+
+import {
+  NotificationStatus,
+  useHomeContext,
+  useNotificationContext
+} from '@/contexts'
 import {
   CreateTaskComponent,
   TaskType,
@@ -23,7 +29,30 @@ export default function TaskSetComponent(): ReactNode {
     searched,
     dateFrom,
     dateTo
-  } = useContext(HomeContext)
+  } = useHomeContext()
+  const {
+    setMessage,
+    setStatus
+  } = useNotificationContext()
+
+  useEffect(
+    () => {
+      const query = ''
+      const url = `api/task/${query}`
+      axios.get(url)
+        .then((response: any) => {
+          setTasks(response.data)
+        })
+        .catch((error: any) => {
+          setMessage(error.response.data.message)
+          setStatus(NotificationStatus.ERROR)
+        })
+    }, [
+    status,
+    searched,
+    dateFrom,
+    dateTo
+  ])
 
   /**
    * Create a task, aggregate it to the set of tasks and send it to the
@@ -33,11 +62,17 @@ export default function TaskSetComponent(): ReactNode {
    */
   const handleCreate = (task: TaskType) => {
     if (!task.title && !task.description) return
-    // POST /api/task/ → setTasks(tasksFetched)
-    setTasks([
-      task,
-      ...tasks
-    ])
+    axios.post('api/task', task)
+      .then(() => {
+        setTasks([
+          task,
+          ...tasks
+        ])
+      })
+      .catch((error: any) => {
+        setMessage(error.response.data.message)
+        setStatus(NotificationStatus.ERROR)
+      })
   }
 
   // const handleModify = ()
@@ -48,7 +83,14 @@ export default function TaskSetComponent(): ReactNode {
    * @arg pk - The primary key of the task to remove.
    */
   const handleRemove = (pk: number): void => {
-    setTasks(tasks.filter((_, index) => index !== pk))
+    axios.delete(`api/task/${pk}`)
+      .then((res: any) => {
+        setTasks(tasks.filter((_, index) => index !== pk))
+      })
+      .catch((error: any) => {
+        setMessage(error.response.data.message)
+        setStatus(NotificationStatus.ERROR)
+      })
   }
 
   /**
@@ -116,16 +158,16 @@ export default function TaskSetComponent(): ReactNode {
         ${craftOrder(index)}
       `}
     >
-      <TaskComponent
-        key={'task-' + index}
-        // Acá va la pk, no index
-        pk={index}
-        title={elem.title}
-        description={elem.description}
-        completed={false}
-        created={new Date()}
-        handleRemove={handleRemove}
-      />
-    </div>)}
+        <TaskComponent
+          key={'task-' + index}
+          // Acá va la pk, no index
+          pk={index}
+          title={elem.title}
+          description={elem.description}
+          completed={false}
+          created={new Date()}
+          handleRemove={handleRemove}
+        />
+      </div>)}
   </div>
 }

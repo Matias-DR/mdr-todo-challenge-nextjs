@@ -1,26 +1,20 @@
+import { NotificationStatus } from '@/contexts'
 import {
   ReactNode,
   useEffect
 } from 'react'
 
 
-export enum NotificationType {
-  SUCCESS = 'success',
-  ERROR = 'error',
-  WARNING = 'warning',
-  INFO = 'info'
-}
-
 /**
  * The properties of the Notification component
  * @arg {string} message - The message to display
  * @arg {function} setMessage - The function to set the message
- * @arg {NotificationType} type - The type of the message
+ * @arg {NotificationStatus} status - The status of the message
  */
 interface Props {
   message: string
   setMessage: (message: string) => void
-  type: NotificationType
+  status: NotificationStatus
 }
 
 const theme = {
@@ -54,7 +48,7 @@ const theme = {
 export default function NotificationComponent({
   message,
   setMessage,
-  type
+  status
 }: Props): ReactNode {
 
   // Set time out to remove the message
@@ -69,9 +63,9 @@ export default function NotificationComponent({
 
   return <div className={`
     ${message ? 'absolute' : 'hidden'}
-    ${theme[type].div}
-    left-10 bottom-10
-    max-w-[40rem] h-10
+    ${theme[status].div}
+    left-1 sm:left-10 bottom-10
+    max-w-[93%] sm:max-w-[40rem] h-10
     ps-8 pe-4 py-2
     font-bold
     bg-zinc-800
@@ -99,7 +93,7 @@ export default function NotificationComponent({
       border-transparent border-l-zinc-900
     '/>
     <div className={`
-      ${theme[type].shape}
+      ${theme[status].shape}
       absolute
       -top-[2px] left-[0px]
       border-[1.3rem] border-solid
@@ -108,7 +102,7 @@ export default function NotificationComponent({
 
     {/* Message */}
     <p className={`
-      ${theme[type].p}
+      ${theme[status].p}
       size-full
       truncate
     `}>
@@ -123,7 +117,7 @@ export default function NotificationComponent({
       border-transparent border-l-zinc-800
     '/>
     <div className={`
-      ${theme[type].shape}
+      ${theme[status].shape}
       absolute
       -top-[2px] -right-[42px]
       border-[1.3rem] border-solid

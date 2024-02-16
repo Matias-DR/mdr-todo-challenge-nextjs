@@ -3,14 +3,10 @@ import flagNeutral from '@/assets/flag-neutral.svg'
 import flagComplete from '@/assets/flag-complete.svg'
 import flagIncomplete from '@/assets/flag-incomplete.svg'
 
-import { HomeContext } from '@/contexts'
+import { useHomeContext } from '@/contexts'
 import { InputType } from '@/commons/element-types'
 import { ProfileButtonComponent } from '@/components/user'
-import {
-  ReactNode,
-  useContext,
-  useState
-} from 'react'
+import { type ReactNode } from 'react'
 
 
 /**
@@ -26,7 +22,7 @@ export default function HeaderComponent(): ReactNode {
     setDateTo,
     status,
     setStatus
-  } = useContext(HomeContext)
+  } = useHomeContext()
 
   const handleDateFrom = (e: any) => {
     setDateFrom(new Date(e.target.value))

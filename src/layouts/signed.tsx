@@ -1,7 +1,12 @@
 import HomeContextProvider from '@/contexts/home'
 
 import { HeaderComponent } from '@/components'
-import { ReactNode } from 'react'
+import { NotificationComponent } from '@/components'
+import {
+  type ReactNode,
+  useState
+} from 'react'
+import { useNotificationContext } from '@/contexts'
 
 
 interface Props {
@@ -15,7 +20,19 @@ export default function SignedLayout({
   email,
   children
 }: Props) {
+  const [timer, setTimer] = useState<number>()
+  const {
+    message,
+    setMessage,
+    status
+  } = useNotificationContext()
+
   return <main className='flex flex-col'>
+    <NotificationComponent
+      message={message}
+      setMessage={setMessage}
+      status={status}
+    />
     <HomeContextProvider
       username={username}
       email={email}

@@ -1,4 +1,4 @@
-import { extractUserFromServerContext } from '.'
+import { extractUserTokenFromServerContext } from '.'
 
 
 interface Redirect {
@@ -11,11 +11,11 @@ interface Return {
 }
 
 export default function serverSideSignedVerify(context: any): Return {
-  const user = extractUserFromServerContext(context)
-  if (!user) return { redirect: { destination: '/sign/in' } }
+  const access = extractUserTokenFromServerContext(context)
+  if (!access) return { redirect: { destination: '/sign/in' } }
   const props = {
-    username: user.username,
-    email: user.email
+    username: access.username,
+    email: access.email
   }
   return { props }
 }

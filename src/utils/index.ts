@@ -1,3 +1,6 @@
 export { default as serverSideSignedVerify } from './server-side-signed-verify'
 export { default as serverSideUnsignedVerify } from './server-side-unsigned-verify'
-export { default as extractUserFromServerContext } from './extract-user-from-server-context'
+export { default as extractUserTokenFromServerContext } from './extract-user-token-from-server-context'
+export { default as extractAccessFromRequest } from './extract-access-from-request'
+export { default as extractRefreshFromRequest } from './extract-refresh-from-request'
+export { default as setAccessInServerContext } from './set-access-in-server-context'

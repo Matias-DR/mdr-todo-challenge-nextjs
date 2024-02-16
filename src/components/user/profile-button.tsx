@@ -3,17 +3,16 @@ import cancel from '@/assets/cancel.svg'
 import Image from 'next/image'
 
 import { ButtonType } from '@/commons/element-types'
-import { HomeContext } from '@/contexts'
 import { InputComponent } from '@/components'
 import { InputType } from '@/commons/element-types'
+import { NotificationStatus } from '@/contexts'
 import {
-  NotificationComponent,
-  NotificationType
-} from '@/components'
+  useHomeContext,
+  useNotificationContext
+} from '@/contexts'
 import { useForm } from 'react-hook-form'
 import {
   type ReactNode,
-  useContext,
   useState
 } from 'react'
 import { useRouter } from 'next/router'
@@ -44,12 +43,10 @@ export default function ProfileButtonComponent(): ReactNode {
     watch,
     clearErrors
   } = useForm<UpdateFormData>()
-
   const router = useRouter()
-
   const [active, setActive] = useState(false)
-
-  const { username, email } = useContext(HomeContext)
+  const { username, email } = useHomeContext()
+  const { setMessage, setStatus } = useNotificationContext()
 
   /**
    * Closes the modal and clears the errors in the form
@@ -58,10 +55,6 @@ export default function ProfileButtonComponent(): ReactNode {
     setActive(false)
     clearErrors()
   }
-  const [message, setMessage] = useState<string>('')
-  const [messageStatus, setMessageStatus] = useState<NotificationType>(
-    NotificationType.INFO
-  )
 
   /**
    * Sends the form data to the endpoint to update the user profile
@@ -72,7 +65,7 @@ export default function ProfileButtonComponent(): ReactNode {
       .then(() => { })
       .catch((error: any) => {
         setMessage(error.response.data.message)
-        setMessageStatus(NotificationType.ERROR)
+        setStatus(NotificationStatus.ERROR)
       })
   }
 
@@ -84,7 +77,7 @@ export default function ProfileButtonComponent(): ReactNode {
       .then(() => router.replace('/sign/in'))
       .catch((error: any) => {
         setMessage(error.response.data.message)
-        setMessageStatus(NotificationType.ERROR)
+        setStatus(NotificationStatus.ERROR)
       })
   }
 
@@ -92,13 +85,6 @@ export default function ProfileButtonComponent(): ReactNode {
     size-9
     inline-block
   '>
-
-    {/* Absolute notification component */}
-    <NotificationComponent
-      message={message}
-      setMessage={setMessage}
-      type={messageStatus}
-    />
 
     {/* Profile button */}
     <button
@@ -260,16 +246,12 @@ export default function ProfileButtonComponent(): ReactNode {
 
             {/* Submit button */}
             <div className='
-            w-full
-            flex justify-center items-center
-          '>
-              <div className='
-              w-full h-12
+              w-44 h-12
               flex justify-center items-center
             '>
-                <button
-                  type={ButtonType.SUBMIT}
-                  className='
+              <button
+                type={ButtonType.SUBMIT}
+                className='
                     min-w-40
                     py-2 px-4
                     font-bold
@@ -280,38 +262,32 @@ export default function ProfileButtonComponent(): ReactNode {
                     hover:bg-indigo-800
                     active:border-0
                   '
-                >
-                  Actualizar datos
-                </button>
-              </div>
+              >
+                Actualizar datos
+              </button>
             </div>
 
             {/* Signout button */}
             <div className='
-              w-full
-              flex justify-center items-center
-            '>
-              <div className='
-                w-full h-12
+                w-36 h-12
                 flex justify-center items-center
               '>
-                <button
-                  type={ButtonType.BUTTON}
-                  onClick={hangleSignout}
-                  className='
-                    py-2 px-4
-                    font-bold
-                    text-zinc-100
-                    bg-indigo-600
-                    border-b-2 border-e-2
-                    border-indigo-400
-                    hover:bg-indigo-800
-                    active:border-0
-                  '
-                >
-                  Cerrar Sesión
-                </button>
-              </div>
+              <button
+                type={ButtonType.BUTTON}
+                onClick={hangleSignout}
+                className='
+                  py-2 px-4
+                  font-bold
+                  text-zinc-100
+                  bg-indigo-600
+                  border-b-2 border-e-2
+                  border-indigo-400
+                  hover:bg-indigo-800
+                  active:border-0
+                '
+              >
+                Cerrar Sesión
+              </button>
             </div>
 
           </div>

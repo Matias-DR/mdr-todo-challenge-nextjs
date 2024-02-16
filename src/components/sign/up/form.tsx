@@ -9,14 +9,14 @@ import {
   InputType
 } from '@/commons/element-types'
 import {
-  NotificationComponent,
-  NotificationType
-} from '@/components'
+  NotificationStatus,
+  useNotificationContext
+} from '@/contexts'
 import { useForm } from 'react-hook-form'
 import { useRouter } from 'next/router'
 import {
   ReactNode,
-  useState
+  useContext
 } from 'react'
 
 
@@ -38,10 +38,10 @@ export default function SignupFormComponent(): ReactNode {
     formState: { errors },
     watch
   } = useForm<SignupFormData>()
-  const [message, setMessage] = useState<string>('')
-  const [messageStatus, setMessageStatus] = useState<NotificationType>(
-    NotificationType.INFO
-  )
+  const {
+    setMessage,
+    setStatus
+  } = useNotificationContext()
   const router = useRouter()
 
   /**
@@ -53,18 +53,11 @@ export default function SignupFormComponent(): ReactNode {
       .then(() => router.push('/sign/in'))
       .catch((error: any) => {
         setMessage(error.response.data.message,)
-        setMessageStatus(NotificationType.ERROR)
+        setStatus(NotificationStatus.ERROR)
       })
   }
 
   return <div className='w-fit'>
-
-    {/* Absolute component for notifications */}
-    <NotificationComponent
-      message={message}
-      setMessage={setMessage}
-      type={messageStatus}
-    />
 
     {/* Form */}
     <form

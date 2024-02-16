@@ -1,6 +1,7 @@
 import {
   createContext,
   ReactNode,
+  useContext,
   useState
 } from 'react'
 
@@ -55,3 +56,8 @@ export default function HomeContextProvider({
     {children}
   </HomeContext.Provider>
 }
+
+export const useHomeContext = () => {
+  return useContext(HomeContext)
+}
+
