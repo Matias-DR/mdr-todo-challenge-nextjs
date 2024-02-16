@@ -61,9 +61,10 @@ export default async function handler(
           const entrySlice = entry.slice(1)
           message = message.concat(entrySlice.join('. '))
         })
+        res.status(error.response.status).json({ message })
       } catch {
         message = 'Ah ocurrido un error inesperado, por favor intente nuevamente.'
+        res.status(500).json({ message })
       }
-      res.status(error.response.status).json({ message })
     })
 }
