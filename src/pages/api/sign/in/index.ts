@@ -1,12 +1,12 @@
-import { JwtPayload, decode } from 'jsonwebtoken'
-import { serialize } from 'cookie'
 import axios from 'axios'
 
 import type {
   NextApiRequest,
   NextApiResponse
 } from 'next'
+import { setTokensInServerContext } from '@/utils'
 import { SignupFormData } from '@/components/sign/up/form'
+
 
 
 /**
@@ -25,31 +25,14 @@ export default async function handler(
   await axios.post(url, formData)
 
     .then((response: any) => {
-      const data = response.data
-      const { exp } = <JwtPayload>decode(data.access)
-      const access = serialize(
-        'access',
-        data.access,
-        {
-          secure: process.env.NODE_ENV === 'production',
-          expires: new Date(exp! * 1000),
-          path: '/'
-        }
-      )
-      const refresh = serialize(
-        'refresh',
-        data.refresh,
-        {
-          secure: process.env.NODE_ENV === 'production',
-          path: '/'
-        }
-      )
-      res.setHeader(
-        'Set-Cookie',
-        [
-          access,
-          refresh
-        ]
+      const {
+        access,
+        refresh
+      } = response.data
+      setTokensInServerContext(
+        res,
+        refresh,
+        access
       )
       res.status(response.status).json({})
     })
