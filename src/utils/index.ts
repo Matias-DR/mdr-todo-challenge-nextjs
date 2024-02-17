@@ -3,4 +3,4 @@ export { default as serverSideUnsignedVerify } from './server-side-unsigned-veri
 export { default as extractUserTokenFromServerContext } from './extract-user-token-from-server-context'
 export { default as extractAccessFromRequest } from './extract-access-from-request'
 export { default as extractRefreshFromRequest } from './extract-refresh-from-request'
-export { default as setAccessInServerContext } from './set-access-in-server-context'
+export { default as setTokensInServerContext } from './set-tokens-in-server-context'
