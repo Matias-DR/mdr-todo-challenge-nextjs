@@ -10,6 +10,7 @@ import {
 export type TaskType = {
   title: string
   description: string
+  pk?: number
   completed?: boolean
   created?: string
 }

@@ -1,6 +1,6 @@
 import SignedLayout from '@/layouts/signed'
 
-import { TaskSetComponent } from '@/components/todo'
+import { TaskSetComponent } from '@/components/task'
 import { serverSideSignedVerify } from '@/utils'
 
 

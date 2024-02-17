@@ -1,10 +1,12 @@
-import { extractAccessFromRequest } from '@/utils'
 import axios from 'axios'
 
+import { extractAccessFromRequest } from '@/utils'
 import type {
   NextApiRequest,
   NextApiResponse
 } from 'next'
+import { refresh } from '@/middleware'
+
 
 const url = process.env.API_HOST + `task/`
 
@@ -16,7 +18,7 @@ const methods: Record<string, Function> = {
     const query = ''
     const access = extractAccessFromRequest(req)
 
-    await axios.get(
+    return await axios.get(
       url,
       {
         headers: {
@@ -25,14 +27,12 @@ const methods: Record<string, Function> = {
       }
     )
 
-      .then((response: any) => {
-        res
-          .status(response.status)
-          .json(response.data)
-      })
+      .then((response: any) => res
+        .status(response.status)
+        .json(response.data)
+      )
 
       .catch((error: any) => {
-        console.log(error.response.data)
         let message = ''
         try {
           Object.entries(error.response.data).map((entry: any) => {
@@ -42,7 +42,10 @@ const methods: Record<string, Function> = {
         } catch {
           message = 'Ah ocurrido un error inesperado, por favor intente nuevamente.'
         }
-        res.status(error.response.status).json({ message })
+        return {
+          status: error.response.status,
+          data: message
+        }
       })
   },
   'POST': async (
@@ -63,7 +66,6 @@ const methods: Record<string, Function> = {
     )
       .then((response: any) => res.status(response.status).json({}))
       .catch((error: any) => {
-        console.log('ESTO QUEDA DE ERROR', error.response.data)
         let message = ''
         try {
           Object.entries(error.response.data).map((entry: any) => {
@@ -90,7 +92,6 @@ const methods: Record<string, Function> = {
   ) => {
     const access = extractAccessFromRequest(req)
     const { pk } = req.query
-    console.log('ESTO TENEMOS COMO PK', pk)
     axios.delete(
       `${url}${pk}/`,
       { headers: { Authorization: `Bearer ${access}` } }
@@ -99,7 +100,6 @@ const methods: Record<string, Function> = {
         res.status(response.status).json({})
       })
       .catch((error: any) => {
-        console.log('ESTO QUEDA DE ERROR', error.response.data)
         let message = ''
         try {
           Object.entries(error.response.data).map((entry: any) => {
@@ -119,10 +119,12 @@ const methods: Record<string, Function> = {
  * @arg {NextApiRequest} req
  * @arg {NextApiResponse} res
  */
-export default async function handler(
+async function handler(
   req: NextApiRequest,
   res: NextApiResponse
-): Promise<void> {
+): Promise<any> {
   const method = req.method
-  methods[method!](req, res)
+  return methods[method!]
 }
+
+export default refresh(handler)

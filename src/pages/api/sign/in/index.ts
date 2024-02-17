@@ -33,7 +33,7 @@ export default async function handler(
         res,
         refresh,
         access
-      )
+        )
       res.status(response.status).json({})
     })
 

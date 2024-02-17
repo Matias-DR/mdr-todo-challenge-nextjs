@@ -11,8 +11,8 @@ export default function setTokensInServerContext(
   refresh: string,
   access: string
 ) {
-  const { accessExp } = <JwtPayload>decode(access)
-  const { refreshExp } = <JwtPayload>decode(refresh)
+  const { exp: accessExp } = <JwtPayload>decode(access)
+  const { exp: refreshExp } = <JwtPayload>decode(refresh)
   const serializedAccess = serialize(
     'access',
     access,

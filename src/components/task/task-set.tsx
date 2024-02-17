@@ -9,7 +9,7 @@ import {
   CreateTaskComponent,
   TaskType,
   TaskComponent
-} from './'
+} from '.'
 import {
   ReactNode,
   useContext,
