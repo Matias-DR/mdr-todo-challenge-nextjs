@@ -1,4 +1,5 @@
 import type { NextApiResponse } from 'next'
+import { NextRequest } from 'next/server'
 import { serialize } from 'cookie'
 import {
   JwtPayload,
@@ -7,9 +8,10 @@ import {
 
 
 export default function setTokensInServerContext(
-  res: NextApiResponse,
   refresh: string,
-  access: string
+  access: string,
+  res?: NextApiResponse,
+  reqServer?: NextRequest
 ) {
   const { exp: accessExp } = <JwtPayload>decode(access)
   const { exp: refreshExp } = <JwtPayload>decode(refresh)
@@ -31,11 +33,17 @@ export default function setTokensInServerContext(
       path: '/'
     }
   )
-  res.setHeader(
-    'Set-Cookie',
-    [
-      serializedAccess,
-      serializedRefresh
-    ]
-  )
+  if (reqServer) {
+    reqServer.cookies.set('access', serializedAccess)
+  } else {
+    if (res) {
+      res.setHeader(
+        'Set-Cookie',
+        [
+          serializedAccess,
+          serializedRefresh
+        ]
+      )
+    }
+  }
 }

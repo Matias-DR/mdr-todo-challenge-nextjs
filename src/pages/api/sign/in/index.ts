@@ -30,9 +30,9 @@ export default async function handler(
         refresh
       } = response.data
       setTokensInServerContext(
-        res,
         refresh,
-        access
+        access,
+        res,
         )
       res.status(response.status).json({})
     })
