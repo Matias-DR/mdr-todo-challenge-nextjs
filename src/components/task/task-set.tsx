@@ -1,58 +1,42 @@
 import axios from 'axios'
 
-import {
-  NotificationStatus,
-  useHomeContext,
-  useNotificationContext
-} from '@/contexts'
-import {
-  CreateTaskComponent,
-  TaskType,
-  TaskComponent
-} from '.'
-import {
-  ReactNode,
-  useContext,
-  useEffect,
-  useState
-} from 'react'
-
+import { useHomeContext, useNotificationContext } from '@/contexts'
+import { CreateTaskComponent, type TaskType, TaskComponent } from '.'
+import { useEffect, useRef, useState } from 'react'
 
 /**
  * A task set component that can be used to display a set of tasks and
  * aggregate them.
  */
-export default function TaskSetComponent(): ReactNode {
-  const [tasks, setTasks] = useState<Array<TaskType>>([])
-  const {
-    status,
-    searched,
-    dateFrom,
-    dateTo
-  } = useHomeContext()
-  const {
-    setMessage,
-    setStatus
-  } = useNotificationContext()
+export default function TaskSetComponent (): React.ReactNode {
+  const [tasks, setTasks] = useState<TaskType[]>([])
+  const { query } = useHomeContext()
+  const queryRef = useRef<string>(query)
+  const { setNotification } = useNotificationContext()
 
-  useEffect(
-    () => {
-      const query = ''
-      const url = `api/task/${query}`
-      axios.get(url)
-        .then((response: any) => {
-          setTasks(response.data)
-        })
-        .catch((error: any) => {
-          setMessage(error.response.data.message)
-          setStatus(NotificationStatus.ERROR)
-        })
-    }, [
-    status,
-    searched,
-    dateFrom,
-    dateTo
-  ])
+  useEffect(() => {
+    axios
+      .get('/api/task')
+      .then((res: { data: TaskType[] }) => {
+        setTasks(res.data)
+      })
+      .catch((error: { response: { data: { message: string } } }) => {
+        setNotification(error.response.data.message, 'error')
+      })
+  }, [])
+
+  useEffect(() => {
+    if (query.length === 0 && queryRef.current.length === 0) return
+    axios
+      .get(`api/task${query}`)
+      .then((res: { data: TaskType[] }) => {
+        setTasks(res.data)
+      })
+      .catch((error: { response: { data: { message: string } } }) => {
+        setNotification(error.response.data.message, 'error')
+      })
+    queryRef.current = query
+  }, [query])
 
   /**
    * Create a task, aggregate it to the set of tasks and send it to the
@@ -60,22 +44,35 @@ export default function TaskSetComponent(): ReactNode {
    * and description, needs almost one of them.
    * @arg {TaskType} task - The task to create.
    */
-  const handleCreate = (task: TaskType) => {
-    if (!task.title && !task.description) return
-    axios.post('api/task', task)
-      .then(() => {
-        setTasks([
-          task,
-          ...tasks
-        ])
+  const handleCreate = (task: TaskType): void => {
+    if (task.title.length === 0 && task.description.length === 0) return
+    axios
+      .post('api/task', task)
+      .then((res: { data: TaskType }) => {
+        setTasks([res.data, ...tasks])
       })
-      .catch((error: any) => {
-        setMessage(error.response.data.message)
-        setStatus(NotificationStatus.ERROR)
+      .catch((error: { response: { data: { message: string } } }) => {
+        setNotification(error.response.data.message, 'error')
       })
   }
 
-  // const handleModify = ()
+  const handleUpdate = (
+    pk: number,
+    title: string,
+    description: string,
+    completed: boolean
+  ): void => {
+    const body = {
+      title,
+      description,
+      completed
+    }
+    axios
+      .patch(`api/task?pk=${pk}`, body)
+      .catch((error: { response: { data: { message: string } } }) => {
+        setNotification(error.response.data.message, 'error')
+      })
+  }
 
   /**
    * Remove a task by primary key and send it to the endpoint for removing
@@ -83,13 +80,13 @@ export default function TaskSetComponent(): ReactNode {
    * @arg pk - The primary key of the task to remove.
    */
   const handleRemove = (pk: number): void => {
-    axios.delete(`api/task/${pk}`)
-      .then((res: any) => {
-        setTasks(tasks.filter((_, index) => index !== pk))
+    axios
+      .delete(`api/task?pk=${pk}`)
+      .then(() => {
+        setTasks(tasks.filter((elem) => elem.pk !== pk))
       })
-      .catch((error: any) => {
-        setMessage(error.response.data.message)
-        setStatus(NotificationStatus.ERROR)
+      .catch((error: { response: { data: { message: string } } }) => {
+        setNotification(error.response.data.message, 'error')
       })
   }
 
@@ -99,75 +96,58 @@ export default function TaskSetComponent(): ReactNode {
    */
   const craftOrder = (index: number): string => `order-${index + 1}`
 
-  // Re-render the list of tasks when they are removed or added.
-  useEffect(() => {
-  }, [tasks])
-
-  // draggable
-  const [draggedItem, setDraggedItem] = useState<number | null>(null)
-
-  const handleDragStart = (index: number) => {
-    setDraggedItem(index)
-  }
-
-  const handleDragOver = (index: number) => {
-    if (draggedItem === null || draggedItem === index) return
-
-    const newTasks = [...tasks]
-    const draggedCard = newTasks[draggedItem]
-
-    newTasks.splice(draggedItem, 1)
-    newTasks.splice(index, 0, draggedCard)
-
-    setTasks(newTasks)
-    setDraggedItem(index)
-  }
-  // draggable
-
-  return <div className='
+  return (
+    <div
+      className="
     w-full
     grid
     grid-rows-2
     grid-cols-1 sm:grid-cols-3 2xl:grid-cols-4
     gap-2
-  '>
-
-    {/* Add task button */}
-    <div
-      key={'add-task-button'}
-      className='
+  "
+    >
+      {/* Add task button */}
+      <div
+        key={'add-task-button'}
+        className="
         min-h-[13.1rem]
         row-span-2
         order-0
-      '
-    >
-      <CreateTaskComponent handleCreate={handleCreate} />
-    </div>
+      "
+      >
+        <CreateTaskComponent handleCreate={handleCreate} />
+      </div>
 
-    {/* Tasks */}
-    {tasks.map((
-      elem,
-      index
-    ) => <div
-      key={index}
-      draggable
-      onDragStart={() => { handleDragStart(index) }}
-      onDragOver={() => { handleDragOver(index) }}
-      className={`
+      {/* Tasks */}
+      {tasks.map((elem, index) => (
+        <div
+          key={elem.pk}
+          className={`
         size-full
         ${craftOrder(index)}
       `}
-    >
-        <TaskComponent
-          key={'task-' + index}
-          // Acá va la pk, no index
-          pk={index}
-          title={elem.title}
-          description={elem.description}
-          completed={false}
-          created={new Date()}
-          handleRemove={handleRemove}
-        />
-      </div>)}
-  </div>
+        >
+          <TaskComponent
+            key={'task-' + elem.pk}
+            pk={
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              elem.pk!
+            }
+            title={elem.title}
+            description={elem.description}
+            completed={
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              elem.completed!
+            }
+            created={
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              new Date(elem.created!)
+            }
+            handleRemove={handleRemove}
+            handleUpdate={handleUpdate}
+          />
+        </div>
+      ))}
+    </div>
+  )
 }
