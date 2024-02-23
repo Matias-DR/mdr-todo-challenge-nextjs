@@ -3,7 +3,7 @@ export {
   default as HomeContextProvider
 } from './home'
 export {
-  NotificationStatus,
   useNotificationContext,
+  type NotificationStatus,
   default as NotificationContextProvider
 } from './notification'

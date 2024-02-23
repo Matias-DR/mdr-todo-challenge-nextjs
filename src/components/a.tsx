@@ -1,5 +1,4 @@
-import { ReactNode } from 'react'
-
+import { type ReactNode } from 'react'
 
 interface Props {
   href: string
@@ -7,18 +6,20 @@ interface Props {
   className?: string
 }
 
-export default function AComponent({
+export default function AComponent ({
   href,
   children,
   className
-}: Props) {
-  return <a
-    className={`
+}: Props): React.ReactNode {
+  return (
+    <a
+      className={`
       ${className} inline-block align-baseline font-bold text-indigo-500 
       hover:text-indigo-800
     `}
-    href={href}
-  >
-    {children}
-  </a>
+      href={href}
+    >
+      {children}
+    </a>
+  )
 }
