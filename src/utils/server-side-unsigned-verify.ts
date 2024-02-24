@@ -23,7 +23,7 @@ export default function serverSideUnsignedVerify(
   const access = getCookie('access', { req, res }) as string;
   const user = extractUserFromToken(access);
   if (user !== undefined && user !== null) {
-    return { redirect: { destination: `${process.env.FRONT_HOST}/` } };
+    return { redirect: { destination: '/' } };
   } else {
     return { props: {} };
   }
