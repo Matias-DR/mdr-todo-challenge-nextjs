@@ -1,9 +1,30 @@
-import { extractUserTokenFromServerContext } from '.'
+import type { NextApiRequest, NextApiResponse } from 'next';
 
-export default function serverSideUnsignedVerify (context: {
-  req: { headers: { cookie: string } }
-}): { props: unknown } | { redirect: { destination: string } } {
-  const user = extractUserTokenFromServerContext(context)
-  if (typeof user === 'string') return { redirect: { destination: '/' } }
-  return { props: {} }
+import { getCookie } from 'cookies-next';
+import { extractUserFromToken } from '.';
+
+export interface Redirect {
+  redirect: { destination: string };
+}
+
+export interface Props {
+  props: unknown;
+}
+
+/**
+ * If the user is signed in, it redirects to the home page.
+ * @arg {NextApiRequest} req
+ * @arg {NextApiResponse} res
+ */
+export default function serverSideUnsignedVerify(
+  req: NextApiRequest,
+  res: NextApiResponse,
+): Redirect | Props {
+  const access = getCookie('access', { req, res }) as string;
+  const user = extractUserFromToken(access);
+  if (user !== undefined && user !== null) {
+    return { redirect: { destination: `${process.env.FRONT_HOST}/` } };
+  } else {
+    return { props: {} };
+  }
 }
