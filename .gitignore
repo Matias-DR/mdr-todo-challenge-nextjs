@@ -36,4 +36,8 @@ yarn-error.log*
 next-env.d.ts
 
 # custom
+./.env
+/.env
 .env
+*.env
+env
