@@ -1,6 +1,8 @@
-import { createContext, type ReactNode, useContext, useState } from 'react'
+import type { ReactNode } from 'react';
 
-export type Sort = 'asc' | 'desc' | ''
+import { createContext, useContext, useState } from 'react';
+
+export type Sort = 'asc' | 'desc' | '';
 
 export const HomeContext = createContext({
   username: '',
@@ -10,24 +12,24 @@ export const HomeContext = createContext({
   query: '',
   setQuery: (value: string) => {},
   sort: 'asc' as Sort,
-  setSort: (value: Sort) => {}
-})
+  setSort: (value: Sort) => {},
+});
 
 export interface Props {
-  username: string
-  email: string
-  children: ReactNode
+  username: string;
+  email: string;
+  children: ReactNode;
 }
 
-export default function HomeContextProvider ({
+export default function HomeContextProvider({
   username: _username,
   email: _email,
-  children
+  children,
 }: Props): React.ReactNode {
-  const [username, setUsername] = useState(_username)
-  const [email, setEmail] = useState(_email)
-  const [query, setQuery] = useState<string>('')
-  const [sort, setSort] = useState<Sort>('')
+  const [username, setUsername] = useState(_username);
+  const [email, setEmail] = useState(_email);
+  const [query, setQuery] = useState<string>('');
+  const [sort, setSort] = useState<Sort>('');
 
   return (
     <HomeContext.Provider
@@ -39,23 +41,23 @@ export default function HomeContextProvider ({
         query,
         setQuery,
         sort,
-        setSort
+        setSort,
       }}
     >
       {children}
     </HomeContext.Provider>
-  )
+  );
 }
 
 export const useHomeContext = (): {
-  username: string
-  setUsername: (value: string) => void
-  email: string
-  setEmail: (value: string) => void
-  query: string
-  setQuery: (value: string) => void
-  sort: Sort
-  setSort: (value: Sort) => void
+  username: string;
+  setUsername: (value: string) => void;
+  email: string;
+  setEmail: (value: string) => void;
+  query: string;
+  setQuery: (value: string) => void;
+  sort: Sort;
+  setSort: (value: Sort) => void;
 } => {
-  return useContext(HomeContext)
-}
+  return useContext(HomeContext);
+};

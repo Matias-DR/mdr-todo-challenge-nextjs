@@ -1,16 +1,13 @@
-/* eslint-disable @typescript-eslint/no-misused-promises */
-import axios from 'axios'
-import cancel from '@/assets/cancel.svg'
-import Image from 'next/image'
+import { InputComponent } from '@/components';
+import { ButtonType, InputType } from '@/components/sign/commons/element-types';
+import { useHomeContext, useNotificationContext } from '@/contexts';
+import { useRouter } from 'next/router';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 
-import { ButtonType, InputType } from '@/components/sign/commons/element-types'
-import { InputComponent } from '@/components'
-
-import { useHomeContext, useNotificationContext } from '@/contexts'
-
-import { useForm } from 'react-hook-form'
-import { useState } from 'react'
-import { useRouter } from 'next/router'
+import cancel from '@/assets/cancel.svg';
+import axios from 'axios';
+import Image from 'next/image';
 
 /**
  * @arg {string} email - Email of the user
@@ -19,36 +16,36 @@ import { useRouter } from 'next/router'
  * @arg {string} newPasswordConfirmation - New password confirmation of the user
  */
 export interface UpdateFormData {
-  email: string
-  currentPassword: string
-  newPassword: string
-  newPasswordConfirmation: string
+  email: string;
+  currentPassword: string;
+  newPassword: string;
+  newPasswordConfirmation: string;
 }
 
 /**
  * Profile button component to show the user profile and update it. It also
  * allows the user to sign out.
  */
-export default function ProfileButtonComponent (): React.ReactNode {
+export default function ProfileButtonComponent(): React.ReactNode {
   const {
     register,
     handleSubmit,
     formState: { errors },
     watch,
-    clearErrors
-  } = useForm<UpdateFormData>()
-  const router = useRouter()
-  const [active, setActive] = useState(false)
-  const { username, email } = useHomeContext()
-  const { setNotification } = useNotificationContext()
+    clearErrors,
+  } = useForm<UpdateFormData>();
+  const router = useRouter();
+  const [active, setActive] = useState(false);
+  const { username, email } = useHomeContext();
+  const { setNotification } = useNotificationContext();
 
   /**
    * Closes the modal and clears the errors in the form
    */
   const handleClose = (): void => {
-    setActive(false)
-    clearErrors()
-  }
+    setActive(false);
+    clearErrors();
+  };
 
   /**
    * Sends the form data to the endpoint to update the user profile
@@ -57,10 +54,13 @@ export default function ProfileButtonComponent (): React.ReactNode {
   const _handleSubmit = (formData: UpdateFormData): void => {
     axios
       .patch('/api/user', formData)
-      .catch((error: { response: { data: { message: string } } }) => {
-        setNotification(error.response.data.message, 'error')
+      .then(() => {
+        setNotification('Datos actualizados correctamente', 'success');
       })
-  }
+      .catch((error: { response: { data: { message: string } } }) => {
+        setNotification(error.response.data.message, 'error');
+      });
+  };
 
   /**
    * Calls the endpoint of signout to signs out the user
@@ -70,23 +70,23 @@ export default function ProfileButtonComponent (): React.ReactNode {
       .post('/api/sign/out')
       .then(async () => await router.replace('/sign/in'))
       .catch((error: { response: { data: { message: string } } }) => {
-        setNotification(error.response.data.message, 'error')
-      })
-  }
+        setNotification(error.response.data.message, 'error');
+      });
+  };
 
   return (
     <div
-      className="
+      className='
     size-9
     inline-block
-  "
+  '
     >
       {/* Profile button */}
       <button
         onClick={() => {
-          setActive(true)
+          setActive(true);
         }}
-        className="
+        className='
         size-full
         font-bold
         bg-indigo-600
@@ -95,7 +95,7 @@ export default function ProfileButtonComponent (): React.ReactNode {
         rounded-full
         hover:bg-indigo-500 hover:border-indigo-300
         active:bg-indigo-700 active:border-0
-      "
+      '
       >
         {username.charAt(0).toUpperCase()}
       </button>
@@ -110,45 +110,42 @@ export default function ProfileButtonComponent (): React.ReactNode {
     `}
       >
         <div
-          className="
+          className='
         relative
         max-w-max
         px-8 py-4
         flex flex-col justify-center items-start
         bg-zinc-800
-      "
+      '
         >
           {/* Close modal button */}
           <button
             type={ButtonType.BUTTON}
             onClick={handleClose}
-            className="
+            className='
             absolute
             top-0 right-0
             flex justify-center items-center
             pt-2 pe-2
             font-bold
             text-zinc-300
-          "
+          '
           >
             <Image
-              src={
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                cancel
-              }
-              alt="cancel"
-              className="size-[1.5rem]"
+              src={cancel}
+              alt='cancel'
+              className='size-[1.5rem]'
             />
           </button>
 
           {/* Username title */}
           <h1
-            className="
+            className='
           max-w-[16rem]
           px-4
           text-xl
           truncate
-        "
+        '
           >
             {username}
           </h1>
@@ -157,88 +154,88 @@ export default function ProfileButtonComponent (): React.ReactNode {
           <form
             noValidate
             onSubmit={handleSubmit(_handleSubmit)}
-            className="
+            className='
             relative
             max-w-max
             p-4
             flex flex-col justify-center items-start
             bg-zinc-800
-          "
+          '
           >
             {/* Email input */}
             <div
-              className="
+              className='
             w-full
             mb-2
-          "
+          '
             >
               <InputComponent
-                id="email"
+                id='email'
                 type={InputType.EMAIL}
                 register={register}
                 registerOptions={{
                   pattern: {
                     value: /\S+@\S+\.\S+/,
-                    message: 'El email no es válido'
-                  }
+                    message: 'El email no es válido',
+                  },
                 }}
                 error={errors.email}
-                label="Email"
+                label='Email'
                 placeholder={email}
               />
             </div>
 
             {/* Current password input */}
             <div
-              className="
+              className='
             w-full
             mb-2
-          "
+          '
             >
               <InputComponent
-                id="currentPassword"
+                id='currentPassword'
                 type={InputType.PASSWORD}
                 register={register}
                 registerOptions={{
-                  required: 'La contraseña actual es requerida'
+                  required: 'La contraseña actual es requerida',
                 }}
                 error={errors.currentPassword}
-                label="Contraseña actual"
+                label='Contraseña actual'
               />
             </div>
 
             {/* New password input */}
             <div
-              className="
+              className='
             w-full
             mb-2
-          "
+          '
             >
               <InputComponent
-                id="newPassword"
+                id='newPassword'
                 type={InputType.PASSWORD}
                 register={register}
                 registerOptions={{
                   pattern: {
                     value: /^(?=.*.)(?=.*\d).{8,}$/,
                     message:
-                      'La contraseña debe tener al menos 8 caracteres, una letra y un número'
-                  }
+                      'La contraseña debe tener al menos 8 caracteres, una letra y un número',
+                  },
                 }}
                 error={errors.newPassword}
-                label="Nueva Contraseña"
+                label='Nueva Contraseña'
               />
             </div>
 
             {/* New password confirmation input */}
             <div
-              className="
+              className='
             w-full
             mb-8 sm:mb-0
-          "
+          '
             >
               <InputComponent
-                id="newPasswordConfirmation"
+                id='newPasswordConfirmation'
                 type={InputType.PASSWORD}
                 register={register}
                 registerOptions={{
@@ -247,31 +244,30 @@ export default function ProfileButtonComponent (): React.ReactNode {
                       ? 'La confirmación de la nueva contraseña es requerida'
                       : false,
                   validate: (value) =>
-                    value === watch('newPassword') ||
-                    'Las contraseñas no coinciden'
+                    value === watch('newPassword') || 'Las contraseñas no coinciden',
                 }}
                 error={errors.newPasswordConfirmation}
-                label="Confirmación de nueva contraseña"
+                label='Confirmación de nueva contraseña'
               />
             </div>
 
             <div
-              className="
+              className='
             w-full h-14
             mb-4 sm:mb-0
             flex flex-col sm:flex-row place-content-evenly items-center gap-4
-          "
+          '
             >
               {/* Submit button */}
               <div
-                className="
+                className='
               w-44 h-12
               flex justify-center items-center
-            "
+            '
               >
                 <button
                   type={ButtonType.SUBMIT}
-                  className="
+                  className='
                     min-w-40
                     py-2 px-4
                     font-bold
@@ -281,7 +277,7 @@ export default function ProfileButtonComponent (): React.ReactNode {
                     border-indigo-400
                     hover:bg-indigo-800
                     active:border-0
-                  "
+                  '
                 >
                   Actualizar datos
                 </button>
@@ -289,15 +285,15 @@ export default function ProfileButtonComponent (): React.ReactNode {
 
               {/* Signout button */}
               <div
-                className="
+                className='
                 w-36 h-12
                 flex justify-center items-center
-              "
+              '
               >
                 <button
                   type={ButtonType.BUTTON}
                   onClick={hangleSignout}
-                  className="
+                  className='
                   py-2 px-4
                   font-bold
                   text-zinc-100
@@ -306,7 +302,7 @@ export default function ProfileButtonComponent (): React.ReactNode {
                   border-indigo-400
                   hover:bg-indigo-800
                   active:border-0
-                "
+                '
                 >
                   Cerrar Sesión
                 </button>
@@ -316,5 +312,5 @@ export default function ProfileButtonComponent (): React.ReactNode {
         </div>
       </div>
     </div>
-  )
+  );
 }

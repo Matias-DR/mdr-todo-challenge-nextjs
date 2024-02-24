@@ -1,8 +1,8 @@
-import axios from 'axios'
+import type { SignupFormData } from '@/components/sign/up/form';
+import type { TaskType } from '@/components/task';
+import type { NextApiRequest, NextApiResponse } from 'next';
 
-import type { NextApiRequest, NextApiResponse } from 'next'
-import { type SignupFormData } from '@/components/sign/up/form'
-import { type TaskType } from '@/components/task'
+import axios from 'axios';
 
 /**
  * Async handler function that sends the signup form data to the external server.
@@ -10,32 +10,29 @@ import { type TaskType } from '@/components/task'
  * @arg {NextApiRequest} req
  * @arg {NextApiResponse} res
  */
-export default async function handler (
+export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ): Promise<void> {
-  const formData = req.body as SignupFormData
-  const url = process.env.API_HOST + 'user/'
+  const formData = req.body as SignupFormData;
+  const url = process.env.BACK_HOST + '/api/user/';
   await axios
     .post(url, formData)
-    .then((response: { data: TaskType, status: number }) => {
-      res.status(response.status).json(response.data)
+    .then((response: { data: TaskType; status: number }) => {
+      res.status(response.status).json(response.data);
     })
     .catch(
-      (error: {
-        response: { data: Record<string, string[]>, status: number }
-      }) => {
-        let message = ''
+      (error: { response: { data: Record<string, string[]>; status: number } }) => {
+        let message = '';
         try {
           Object.entries(error.response.data).map(
             (entry: [string, string[]]) =>
-              (message = message.concat(entry[1].join('. ')))
-          )
+              (message = message.concat(entry[1].join('. '))),
+          );
         } catch {
-          message =
-            'Ah ocurrido un error inesperado, por favor intente nuevamente.'
+          message = 'Ah ocurrido un error inesperado, por favor intente nuevamente.';
         }
-        res.status(error.response.status).json({ message })
-      }
-    )
+        res.status(error.response.status).json({ message });
+      },
+    );
 }

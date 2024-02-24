@@ -1,22 +1,23 @@
-import { NotificationComponent } from '@/components'
-import { type ReactNode } from 'react'
-import { useNotificationContext } from '@/contexts'
+import type { ReactNode } from 'react';
 
-import Link from 'next/link'
+import { NotificationComponent } from '@/components';
+import { useNotificationContext } from '@/contexts';
+
+import Link from 'next/link';
 
 interface Props {
-  children: ReactNode
+  children: ReactNode;
 }
 
-export default function UnsignedLayout ({ children }: Props): React.ReactNode {
-  const { message, setMessage, status } = useNotificationContext()
+export default function UnsignedLayout({ children }: Props): React.ReactNode {
+  const { message, setMessage, status } = useNotificationContext();
 
   return (
     <main
-      className="
+      className='
     relative
     flex justify-center items-center
-  "
+  '
     >
       <NotificationComponent
         message={message}
@@ -24,18 +25,16 @@ export default function UnsignedLayout ({ children }: Props): React.ReactNode {
         status={status}
       />
       <div
-        className="
+        className='
       max-w-[80%] sm:w-full h-fit
       flex justify-center items-center
-    "
+    '
       >
         {children}
       </div>
-      <p className="absolute bottom-0 text-center text-gray-500 text-xs">
-        <Link href="/rights">
-          &copy;2024 MDR. Todos los derechos reservados.
-        </Link>
+      <p className='absolute bottom-0 text-center text-gray-500 text-xs'>
+        <Link href='/rights'>&copy;2024 MDR. Todos los derechos reservados.</Link>
       </p>
     </main>
-  )
+  );
 }

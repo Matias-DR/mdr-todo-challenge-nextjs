@@ -1,2 +1,2 @@
-export { default as SignedLayout } from './signed'
-export { default as UnsignedLayout } from './unsigned'
+export { default as SignedLayout } from './signed';
+export { default as UnsignedLayout } from './unsigned';

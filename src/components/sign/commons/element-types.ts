@@ -1,7 +1,7 @@
 export enum ButtonType {
   SUBMIT = 'submit',
   BUTTON = 'button',
-  RESET = 'reset'
+  RESET = 'reset',
 }
 
 export enum InputType {
@@ -9,5 +9,5 @@ export enum InputType {
   EMAIL = 'email',
   PASSWORD = 'password',
   CHECK = 'checkbox',
-  DATE = 'date'
+  DATE = 'date',
 }

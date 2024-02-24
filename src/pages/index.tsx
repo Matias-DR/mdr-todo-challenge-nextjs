@@ -1,27 +1,54 @@
-import SignedLayout from '@/layouts/signed'
+import type { NextApiRequest, NextApiResponse } from 'next';
 
-import { TaskSetComponent } from '@/components/task'
-import { serverSideSignedVerify } from '@/utils'
+import { getCookie } from 'cookies-next';
+import { extractUserFromToken } from '@/utils';
+import { TaskSetComponent } from '@/components/task';
+
+import SignedLayout from '@/layouts/signed';
 
 interface Props {
-  username: string
-  email: string
+  username: string;
+  email: string;
 }
 
-export default function Home ({ username, email }: Props): React.ReactNode {
+export default function Home({ username, email }: Props): React.ReactNode {
   return (
-    <SignedLayout username={username} email={email}>
-      <div className="w-full flex-grow p-2">
+    <SignedLayout
+      username={username}
+      email={email}
+    >
+      <div className='w-full flex-grow p-2'>
         <TaskSetComponent />
       </div>
     </SignedLayout>
-  )
+  );
 }
 
-export function getServerSideProps (context: {
-  req: { headers: { cookie: string } }
-}):
-  | { redirect: { destination: string } }
-  | { props: { username: string, email: string } } {
-  return serverSideSignedVerify(context)
+interface ReturnRedirect {
+  redirect: { destination: string };
+}
+
+interface ReturnProps {
+  props: { username: string; email: string };
+}
+
+export function getServerSideProps({
+  req,
+  res,
+}: {
+  req: NextApiRequest;
+  res: NextApiResponse;
+}): ReturnRedirect | ReturnProps {
+  const access = getCookie('access', { req, res }) as string;
+  const user = extractUserFromToken(access);
+  if (user === undefined || user === null) {
+    return { redirect: { destination: `${process.env.FRONT_HOST}/sign/in` } };
+  } else {
+    return {
+      props: {
+        username: user.username,
+        email: user.email,
+      },
+    };
+  }
 }

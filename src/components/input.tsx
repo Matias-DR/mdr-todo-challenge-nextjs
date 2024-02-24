@@ -1,27 +1,22 @@
-import { type InputType } from '@/components/sign/commons/element-types'
-import {
-  type FieldError,
-  type RegisterOptions,
-  type UseFormRegister
-} from 'react-hook-form'
+import type { InputType } from '@/components/sign/commons/element-types';
+import type { FieldError, RegisterOptions, UseFormRegister } from 'react-hook-form';
 
 interface Props {
-  id: string
-  type: InputType
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  register: UseFormRegister<any>
-  registerOptions?: RegisterOptions
-  error?: FieldError
-  label?: string
-  placeholder?: string
-  autoFocus?: boolean
+  id: string;
+  type: InputType;
+  register: UseFormRegister<any>;
+  registerOptions?: RegisterOptions;
+  error?: FieldError;
+  label?: string;
+  placeholder?: string;
+  autoFocus?: boolean;
   className?: {
-    label?: string
-    input?: string
-  }
+    label?: string;
+    input?: string;
+  };
 }
 
-export default function InputComponent ({
+export default function InputComponent({
   id,
   type,
   register,
@@ -30,7 +25,7 @@ export default function InputComponent ({
   label,
   placeholder,
   autoFocus = false,
-  className
+  className,
 }: Props): React.ReactNode {
   return (
     <>
@@ -57,7 +52,7 @@ export default function InputComponent ({
         autoFocus={autoFocus}
         {...(Boolean(register) && register(id, registerOptions))}
       />
-      <div className="relative w-full h-[1rem] mb-2">
+      <div className='relative w-full h-[1rem] mb-2'>
         {Boolean(error) && (
           <p
             className={`${
@@ -69,5 +64,5 @@ export default function InputComponent ({
         )}
       </div>
     </>
-  )
+  );
 }

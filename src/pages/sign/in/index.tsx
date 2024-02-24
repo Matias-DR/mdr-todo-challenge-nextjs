@@ -1,17 +1,24 @@
-import { serverSideUnsignedVerify } from '@/utils'
-import { SigninFormComponent } from '@/components/sign'
-import { UnsignedLayout } from '@/layouts'
+import type { NextApiRequest, NextApiResponse } from 'next';
+import type { Redirect, Props } from '@/utils/server-side-unsigned-verify';
 
-export default function SigninPage (): React.ReactNode {
+import { SigninFormComponent } from '@/components/sign';
+import { UnsignedLayout } from '@/layouts';
+import { serverSideUnsignedVerify } from '@/utils';
+
+export default function SigninPage(): React.ReactNode {
   return (
     <UnsignedLayout>
       <SigninFormComponent />
     </UnsignedLayout>
-  )
+  );
 }
 
-export function getServerSideProps (context: {
-  req: { headers: { cookie: string } }
-}): { props: unknown } | { redirect: { destination: string } } {
-  return serverSideUnsignedVerify(context)
+export function getServerSideProps({
+  req,
+  res,
+}: {
+  req: NextApiRequest;
+  res: NextApiResponse;
+}): Redirect | Props {
+  return serverSideUnsignedVerify(req, res);
 }

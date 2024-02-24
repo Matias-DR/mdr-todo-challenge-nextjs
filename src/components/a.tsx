@@ -1,15 +1,15 @@
-import { type ReactNode } from 'react'
+import type { ReactNode } from 'react';
 
 interface Props {
-  href: string
-  children: ReactNode
-  className?: string
+  href: string;
+  children: ReactNode;
+  className?: string;
 }
 
-export default function AComponent ({
+export default function AComponent({
   href,
   children,
-  className
+  className,
 }: Props): React.ReactNode {
   return (
     <a
@@ -21,5 +21,5 @@ export default function AComponent ({
     >
       {children}
     </a>
-  )
+  );
 }
