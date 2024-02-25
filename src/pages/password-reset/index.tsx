@@ -1,24 +1,38 @@
+import type { Props, Redirect } from '@/utils/server-side-unsigned-verify';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import type { Redirect, Props } from '@/utils/server-side-unsigned-verify';
 
 import { AComponent, InputComponent } from '@/components';
 import { ButtonType, InputType } from '@/components/sign/commons/element-types';
+import { useNotificationContext } from '@/contexts';
 import { UnsignedLayout } from '@/layouts';
 import { serverSideUnsignedVerify } from '@/utils';
+import { ReactNode } from 'react';
 import { useForm } from 'react-hook-form';
+
+import axios from 'axios';
 
 interface FormData {
   email: string;
 }
 
-export default function PasswordRecuperation(): React.ReactNode {
+export default function PasswordReset(): ReactNode {
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<FormData>();
+  const { setNotification } = useNotificationContext();
 
-  const _handleSubmit = (formData: FormData): void => {};
+  const _handleSubmit = (formData: FormData): void => {
+    axios
+      .post('/api/password-reset', formData)
+      .then((res: { data: { message: string } }): void => {
+        setNotification(res.data.message, 'info');
+      })
+      .catch((error: { response: { data: { message: string } } }) => {
+        setNotification(error.response.data.message, 'error');
+      });
+  };
 
   return (
     <UnsignedLayout>

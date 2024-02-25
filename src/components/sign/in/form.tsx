@@ -111,7 +111,7 @@ export default function SigninFormComponent(): React.ReactNode {
 
           {/* Forgot password link */}
           <AComponent
-            href='/sign/password-recuperation'
+            href='/password-reset'
             className='text-sm sm:text-base'
           >
             ¿Ha olvidado su contraseña?
